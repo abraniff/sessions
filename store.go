@@ -127,6 +127,19 @@ func (s *CookieStore) MaxAge(age int) {
 	}
 }
 
+// MaxLength sets the maximum length for the store and the underlying cookie
+// implementation.
+func (s *CookieStore) MaxLength(length int) {
+	s.Options.MaxLength = length
+
+	// Set the maxAge for each securecookie instance.
+	for _, codec := range s.Codecs {
+		if sc, ok := codec.(*securecookie.SecureCookie); ok {
+			sc.MaxLength(length)
+		}
+	}
+}
+
 // FilesystemStore ------------------------------------------------------------
 
 var fileMutex sync.RWMutex
